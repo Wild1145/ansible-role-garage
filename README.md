@@ -17,7 +17,7 @@ ansible-galaxy install eddster2309.garage
 ```
 
 ## Configuring this role
-The configuration options for this role can be found in [defaults/main.yml](./blob/main/defaults/main.yml). **Make sure to change all secrets!**
+The configuration options for this role can be found in [defaults/main.yml](./defaults/main.yml). **Make sure to change all secrets!**
 
 ## Upgrading Garage
 Currently this role has not been tested to upgrade the cluster but will always grab the latest binary, work will done to change this.
