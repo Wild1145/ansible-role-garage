@@ -1,0 +1,78 @@
+- name: Get latest Garage version
+  ansible.builtin.uri:
+    url: https://git.deuxfleurs.fr/api/v1/repos/Deuxfleurs/garage/releases?draft=false&pre-release=false&limit=1
+    return_content: true
+  register: garage_latest
+
+- name: Get Garage version
+  ansible.builtin.set_fact:
+    garage_version: "{{ garage_latest.json[0].tag_name }}"
+
+- name: Download Garage
+  ansible.builtin.get_url:
+    url: "https://garagehq.deuxfleurs.fr/_releases/{{ garage_version }}/x86_64-unknown-linux-musl/garage"
+    dest: "{{ garage_binary }}"
+    mode: '0711'
+    owner: root
+    group: root
+  notify: Restart garage
+
+- name: Create garage group
+  ansible.builtin.group:
+    name: "{{ garage_group }}"
+    state: present
+    system: true
+
+- name: Create Garage User
+  ansible.builtin.user:
+    name: "{{ garage_user }}"
+    group: "{{ garage_group }}"
+    system: true
+    state: present
+
+- name: Create Garage directories
+  ansible.builtin.file:
+    state: directory
+    path: "{{ item }}"
+    mode: "0700"
+    owner: "{{ garage_user }}"
+    group: "{{ garage_group }}"
+  loop:
+    - "{{ garage_metadata_directory }}"
+    - "{{ garage_data_directory }}"
+    - "{{ garage_config_directory }}"
+
+- name: Template garage config file
+  ansible.builtin.template:
+    src: garage.conf.j2
+    dest: "/etc/garage.toml"
+    mode: '0600'
+    owner: "{{ garage_user }}"
+    group: "{{ garage_group }}"
+  notify: Restart garage
+
+- name: Create Garage systemd service file
+  ansible.builtin.template:
+    src: garage.service.j2
+    dest: /etc/systemd/system/garage.service
+    mode: '0644'
+    owner: root
+    group: root
+  notify: Restart garage
+
+- name: Start and enable Garage service
+  ansible.builtin.systemd:
+    name: garage
+    state: started
+    enabled: true
+    daemon_reload: true
+
+- name: Get node id
+  ansible.builtin.shell: |
+    garage node id -q
+  changed_when: false
+  register: garage_node_id
+
+- name: Save garage node id
+  ansible.builtin.set_fact:
+    garage_node_id: "{{ garage_node_id.stdout }}"

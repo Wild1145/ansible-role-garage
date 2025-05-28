@@ -1,0 +1,38 @@
+- name: Don't allow 2 node deployment
+  ansible.builtin.assert:
+    that: not ansible_play_hosts | length == 2
+    msg: "A clustered Garage deployment requires at least 3 nodes."
+
+- name: Configure firewall
+  ansible.builtin.include_tasks:
+    file: configure_firewall.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: Install garage
+  ansible.builtin.include_tasks:
+    file: install_garage.yml
+
+- name: Configure multi node Garage
+  ansible.builtin.include_tasks:
+    file: configure_garage.yml
+  when: ansible_play_hosts | length > 1
+
+- name: Install nginx
+  ansible.builtin.include_tasks:
+    file: nginx.yml
+  when: garage_nginx_enabled
+
+- name: Install keepalived
+  ansible.builtin.include_role:
+    name: evrardjp.keepalived
+  vars:
+    keepalived_show_ansible_managed: true
+    keepalived_instances:
+      internal:
+        interface: "{{ ansible_default_ipv4.interface }}"
+        state: "{{ (ansible_play_hosts.index(inventory_hostname) == 0) | ternary('MASTER', 'BACKUP') }}"
+        virtual_router_id: "{{ vrrp_id | default(42) }}"
+        priority: "{{ (inventory_hostname == ansible_play_hosts[0]) | ternary('200', '100') }}"
+        vips:
+          - "{{ garage_vip }} dev {{ ansible_default_ipv4.interface }}"
+  when: garage_keepalived_enabled and ansible_play_hosts | length > 1
