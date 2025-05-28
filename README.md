@@ -10,14 +10,14 @@ Currently this playbook can do the following:
 - Install Keepalived to create a VIP between nodes. Using [evrardjp.keepalived](https://github.com/evrardjp/ansible-keepalived) role.
 - Configure the firewall on systems using firewalld to allow for secure comunications between nodes
 
-# Installing this role
+## Installing this role
 This role is published on Ansible Galaxy:
 ```
 ansible-galaxy install eddster2309.garage
 ```
 
-# Configuring this role
+## Configuring this role
 The configuration options for this role can be found in [defaults/main.yml](./blob/main/defaults/main.yml). **Make sure to change all secrets!**
 
-# Upgrading Garage
+## Upgrading Garage
 Currently this role has not been tested to upgrade the cluster but will always grab the latest binary, work will done to change this.
