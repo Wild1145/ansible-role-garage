@@ -63,9 +63,9 @@
   when: is_major_upgrade
 
 - name: Upgrade Garage
-  ansible.builtin.include_tasks: install_garage.yml
+  ansible.builtin.import_tasks: install_garage.yml
   when: current_garage_version is defined and current_garage_version is version(garage_version, '<')
-  serial: 1
+  throttle: 1
 
 - name: Install Garage
   ansible.builtin.include_tasks: install_garage.yml
