@@ -24,14 +24,4 @@
 - name: Install keepalived
   ansible.builtin.import_role:
     name: evrardjp.keepalived
-  vars:
-    keepalived_show_ansible_managed: true
-    keepalived_instances:
-      internal:
-        interface: "{{ ansible_default_ipv4.interface }}"
-        state: "{{ (ansible_play_hosts.index(inventory_hostname) == 0) | ternary('MASTER', 'BACKUP') }}"
-        virtual_router_id: "{{ vrrp_id | default(42) }}"
-        priority: "{{ (inventory_hostname == ansible_play_hosts[0]) | ternary('200', '100') }}"
-        vips:
-          - "{{ garage_vip }} dev {{ ansible_default_ipv4.interface }}"
   when: garage_keepalived_enabled and ansible_play_hosts | length > 1
