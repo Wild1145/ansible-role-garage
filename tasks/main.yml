@@ -22,7 +22,7 @@
   when: garage_nginx_enabled
 
 - name: Install keepalived
-  ansible.builtin.include_role:
+  ansible.builtin.import_role:
     name: evrardjp.keepalived
   vars:
     keepalived_show_ansible_managed: true
