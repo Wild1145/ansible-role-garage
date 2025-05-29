@@ -40,7 +40,6 @@
   loop:
     - "{{ garage_metadata_directory }}"
     - "{{ garage_data_directory }}"
-    - "{{ garage_config_directory }}"
 
 - name: Template garage config file
   ansible.builtin.template:

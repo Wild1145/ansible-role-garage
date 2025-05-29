@@ -1,29 +1,42 @@
 garage_metadata_directory: /opt/garage/metadata
 garage_data_directory: /opt/garage/data
-garage_config_directory: /opt/garage/config
+
+# This can be set to a specific version or "latest"
+# The version tag should be in the format vX.Y.Z
+garage_version: "latest"
 
 garage_replication_factor: 1
-garage_rpc_secret: febe61022ea9cc8df7f7963799497c2922ca574717a6700311250111773d82af
-garage_s3_region: "garage"
+garage_compression_level: 2
+
 garage_s3_root_domain: "s3.garage.internal"
 garage_web_root_domain: "web.garage.internal"
 
+garage_s3_region: "garage"
+
+# The name of the zone for the Garage service
+# If you set this within host vars it allows for fancy configurations of reduncy incase you have multiple zones (locations)
+garage_zone_name: garage
+
+# I would reccomend setting this in host vars to allow for different node sizes.
+# But also it is best that this is the same across all nodes.
+# Please read the documentation for more information on this: https://garagehq.deuxfleurs.fr/documentation/cookbook/real-world/
+garage_node_capacity: 15G
+
+# Secrets. PLEASE CHANGE THESE BEFORE PRODUCTION USE!
+garage_rpc_secret: febe61022ea9cc8df7f7963799497c2922ca574717a6700311250111773d82af
 garage_admin_token: 9a133d8f8b1f7c79f06d7a1923cb9a1342d4527e83a0aeb8728b8d112dab8d61
 garage_metrics_token: bd5dd85ea558052680cacf3cb994255d6b738e5d9e7ef62dd6fc9fe3e0ac5abb
 
-# Nginx only supported for single node deployments
-# If you want a multi-node deployment, you need to bring your own reverse proxy. have fun
-garage_nginx_enabled: true
-
-garage_node_capacity: 15G
-garage_zone_name: garage
-
 garage_admin_api_port: 3903
-garage_rpc_address: "{{ ansible_default_ipv4.address }}"
 garage_rpc_port: 3901
-garage_compression_level: 2
 garage_s3_port: 3900
 garage_web_port: 3902
+
+garage_rpc_address: "{{ ansible_default_ipv4.address }}"
+
+# Nginx only supported for single node deployments
+# If you want a multi-node deployment, you need to bring your own reverse proxy.
+garage_nginx_enabled: true
 
 garage_keepalived_enabled: true
 # The VIP for the Garage service, used by keepalived

@@ -8,14 +8,13 @@
     file: configure_firewall.yml
   when: ansible_os_family == 'RedHat'
 
-- name: Install garage
+- name: Check garage version
   ansible.builtin.include_tasks:
-    file: install_garage.yml
+    file: check_garage_version.yml
 
-- name: Configure multi node Garage
+- name: Configure Garage
   ansible.builtin.include_tasks:
     file: configure_garage.yml
-  when: ansible_play_hosts | length > 1
 
 - name: Install nginx
   ansible.builtin.include_tasks:
