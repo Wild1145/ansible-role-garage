@@ -1,7 +1,6 @@
-- name: Don't allow 2 node deployment
-  ansible.builtin.assert:
-    that: not ansible_play_hosts | length == 2
-    msg: "A clustered Garage deployment requires at least 3 nodes."
+- name: Validate Garage configuration
+  ansible.builtin.include_tasks:
+    file: validate_config.yml
 
 - name: Configure firewall
   ansible.builtin.include_tasks:
@@ -11,6 +10,16 @@
 - name: Check garage version
   ansible.builtin.include_tasks:
     file: check_garage_version.yml
+
+- name: Get node id
+  ansible.builtin.shell: |
+    garage node id -q
+  changed_when: false
+  register: garage_node_id
+
+- name: Save garage node id
+  ansible.builtin.set_fact:
+    garage_node_id: "{{ garage_node_id.stdout }}"
 
 - name: Configure Garage
   ansible.builtin.include_tasks:
@@ -25,3 +34,22 @@
   ansible.builtin.import_role:
     name: evrardjp.keepalived
   when: garage_keepalived_enabled and ansible_play_hosts | length > 1
+
+- name: Create Garage buckets
+  ansible.builtin.include_tasks:
+    file: create_bucket.yml
+  run_once: true
+  vars:
+    bucket: "{{ item }}"
+  loop: "{{ garage_buckets | default([]) }}"
+  when: garage_buckets is defined and garage_buckets | length > 0
+
+- name: Create Garage keys
+  ansible.builtin.include_tasks:
+    file: create_key.yml
+  run_once: true
+  loop_control:
+    label: "{{ key.name }}"
+    loop_var: key
+  loop: "{{ garage_keys | default([]) }}"
+  when: garage_keys is defined and garage_keys | length > 0

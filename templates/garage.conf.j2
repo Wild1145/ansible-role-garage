@@ -1,9 +1,11 @@
 metadata_dir = "{{ garage_metadata_directory }}"
 data_dir = "{{ garage_data_directory }}"
-db_engine = "sqlite"
+db_engine = "{{ garage_db_engine }}"
 
 replication_factor = {{ garage_replication_factor }}
 
+consistency_mode = "{{ garage_consistency_mode }}"
+metadata_fsync = {{ garage_metadata_fsync | lower}}
 compression_level = {{ garage_compression_level }}
 
 rpc_bind_addr = "[::]:{{ garage_rpc_port }}"

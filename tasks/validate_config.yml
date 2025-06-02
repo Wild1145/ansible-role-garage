@@ -1,0 +1,29 @@
+- name: Don't allow 2 node deployment
+  ansible.builtin.assert:
+    that: not ansible_play_hosts | length == 2
+    msg: "A clustered Garage deployment requires at least 3 nodes."
+
+- name: Check that replication factor is not larger than number of nodes
+  ansible.builtin.assert:
+    that:
+      - garage_replication_factor <= ansible_play_hosts | length
+    msg: "The replication factor must not be larger than the number of nodes in the cluster."
+
+- name: Check that replication factor is not less than 1
+  ansible.builtin.assert:
+    that:
+      - garage_replication_factor >= 1
+    msg: "The replication factor must be at least 1."
+
+- name: Check that consistency mode is valid
+  ansible.builtin.assert:
+    that:
+      - garage_consistency_mode in ['consistent', 'degraded', 'dangerous']
+    msg: "The consistency mode must be one of 'consistent', 'degraded', or 'dangerous'."
+
+- name: Check that db engine is valid
+  ansible.builtin.assert:
+    that:
+      - garage_db_engine in ['sqlite', 'lmdb', 'sled']
+      - garage_db_engine != 'sled' or garage_version is version('0.9.0', '<')
+    msg: "The database engine must be one of 'sqlite', 'lmdb', or 'sled' (pre v0.9.0)."

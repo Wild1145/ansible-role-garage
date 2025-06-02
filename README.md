@@ -9,6 +9,8 @@ Currently this playbook can do the following:
 - Install Nginx as a load balancer between nodes
 - Install Keepalived to create a VIP between nodes. Using [evrardjp.keepalived](https://github.com/evrardjp/ansible-keepalived) role.
 - Configure the firewall on systems using firewalld to allow for secure comunications between nodes
+- Create buckets and configure relavent settings (quotas and web access).
+- Create access keys and assign defined access
 
 ## Installing this role
 This role is published on Ansible Galaxy:
@@ -20,7 +22,16 @@ ansible-galaxy install eddster2309.garage
 The configuration options for this role can be found in [defaults/main.yml](./defaults/main.yml). **Make sure to change all secrets!**
 
 ## Upgrading Garage
-Currently this role has not been tested to upgrade the cluster but will always grab the latest binary, work will done to change this.
+By default this role will always pull the latest version of the binary, but it is reccomended that you set the `garage_version` variable to a particular version (not `latest`) and then read the [release notes](https://git.deuxfleurs.fr/Deuxfleurs/garage/releases) before upgrading.
+
+## Managing buckets and keys
+This role can create and manage keys and buckets withing Garage. It will not delete buckets or keys.
+### Creating buckets
+Buckets can ne defined within the `garage_buckets` variable as fount in [defaults/main.yml](./defaults/main.yml). The only required field is the name, by default web access will be disabled and there will be an unlimited quota. Bucket name must be unique.
+### Creating keys
+Keys can be defined within the `garage_keys` variable as fount in [defaults/main.yml](./defaults/main.yml). The ID must be unique and me a 24 character hexadecimal string prefixed with `GK`. The secret must be a 64 character hexadecimal string.
+
+To generate a key can complies to all the requirements use the `keygen.sh` bash script included with this role.
 
 ## Ngnix Deployment
 The nginx deployment that this role deploys is meant to load balance and provide subdomain support for the S3 and web endpoints on a single port. If you have another reverse proxy I would recomend you set up your own loadbalancer in accordance with [Garage's docs](https://garagehq.deuxfleurs.fr/documentation/cookbook/reverse-proxy/).

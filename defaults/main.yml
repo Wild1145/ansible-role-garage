@@ -5,7 +5,20 @@ garage_data_directory: /opt/garage/data
 # The version tag should be in the format vX.Y.Z
 garage_version: "latest"
 
-garage_replication_factor: 1
+# It is not recommended to change this value after installation.
+# Please refer to the documentation for more information: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#replication_factor
+garage_replication_factor: "{{ ansible_play_hosts | length }}"
+
+# Must be set to "cconsistent", "degraded" or "dangerous".
+# Refer to the documentation for more information: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#consistency_mode
+garage_consistency_mode: "consistent"
+
+# This must be set to "sqlite", "lmdb" or "sled" (pre v0.9.0).
+# Refer to the documentation for more information: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#db_engine
+garage_db_engine: sqlite
+
+garage_metadata_fsync: false
+
 garage_compression_level: 2
 
 garage_s3_root_domain: "s3.garage.internal"
@@ -41,3 +54,19 @@ garage_nginx_enabled: true
 garage_keepalived_enabled: true
 # The VIP for the Garage service, used by keepalived
 # garage_vip: 0.0.0.0
+
+garage_buckets:
+  - name: garage
+    web_access:
+      enabled: false
+
+garage_keys:
+  - name: "garage"
+    id: GK1234567890abcdef12345678
+    secret: 1234567890abcdef123456781234567890abcdef123456781234567890abcdef
+    buckets:
+      - name: "garage"
+        access:
+          - read
+          - write
+          - owner

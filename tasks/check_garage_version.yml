@@ -42,25 +42,10 @@
       ansible.builtin.set_fact:
         garage_version: "{{ garage_latest.json[0].tag_name }}"
 
-- name: Check if Garage verison upgrade is major
-  ansible.builtin.set_fact:
-    is_major_upgrade: "{{ current_garage_version is defined and current_garage_version is version(garage_version, '<')
-                        and garage_version.split('.')[0] | int > current_garage_version.split('.')[0] | int }}"
-
-- name: Check if Garage version is already installed
-  ansible.builtin.fail:
-    msg: "Garage version {{ garage_version }} is already installed."
-  when: current_garage_version is defined and current_garage_version == garage_version
-
 - name: Check if Garage version is older
   ansible.builtin.fail:
     msg: "Garage version {{ garage_version }} is older than the current version {{ current_garage_version }}."
   when: current_garage_version is defined and current_garage_version is version(garage_version, '>')
-
-- name: Major upgrade check
-  ansible.builtin.fail:
-    msg: "Major upgrade detected from {{ current_garage_version }} to {{ garage_version }}. Please check the changelog before proceeding."
-  when: is_major_upgrade
 
 - name: Upgrade Garage
   ansible.builtin.import_tasks: install_garage.yml
@@ -69,4 +54,4 @@
 
 - name: Install Garage
   ansible.builtin.include_tasks: install_garage.yml
-  when: current_garage_version is not defined
+  when: current_garage_version is not defined or not (current_garage_version is defined and current_garage_version == garage_version)
