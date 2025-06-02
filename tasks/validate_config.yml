@@ -6,13 +6,13 @@
 - name: Check that replication factor is not larger than number of nodes
   ansible.builtin.assert:
     that:
-      - garage_replication_factor <= ansible_play_hosts | length
+      - garage_replication_factor | int <= ansible_play_hosts | length
     msg: "The replication factor must not be larger than the number of nodes in the cluster."
 
 - name: Check that replication factor is not less than 1
   ansible.builtin.assert:
     that:
-      - garage_replication_factor >= 1
+      - garage_replication_factor | int >= 1
     msg: "The replication factor must be at least 1."
 
 - name: Check that consistency mode is valid
