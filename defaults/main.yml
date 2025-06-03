@@ -1,5 +1,6 @@
 garage_metadata_directory: /opt/garage/metadata
 garage_data_directory: /opt/garage/data
+garaeg_metadata_snapshot_directory: "{{ garage_metadata_directory }}/snapshots"
 
 # This can be set to a specific version or "latest"
 # The version tag should be in the format vX.Y.Z
@@ -18,16 +19,47 @@ garage_consistency_mode: "consistent"
 garage_db_engine: sqlite
 
 garage_metadata_fsync: false
+garage_data_fsync: false
 
+# Enabling this may not be reccomend if you have high write loads. It is reccomended to use file system snapshots instead.
+# Please refer to the documentation for more information:
+# https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#metadata_auto_snapshot_interval
+garage_metadata_autosnapshot_enabled: false
+garage_metadata_autosnapshot_interval: 6h
+
+garage_scrub_enabled: true
+
+# By default Garage uses UTC to run the lifecycle worker.
+# Refer to the documentation for more information: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#use_local_tz
+garage_use_local_time: true
+
+# The size of the blocks used by Garage for storing data. You may want to increase this if you have large files and a good network connection between nodes.
+# Please refer to the documentation for more information: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#block_size
+garage_block_size: "1M"
+
+# Before changing this value, please read the documentation: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#block_ram_buffer_max
+garage_block_ram_buffer_max: "256MiB"
+
+# The maximum size of the metadata LMDB database. This is only used if you are using the LMDB database engine.
+# Please read the documentation before setting this value: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#lmdb_map_size
+# garage_lmdb_map_size: 0
+
+# The Zstd compression level used by Garage for storing data. This can be set to an integer between 1 and 19, or "none" to disable compression.
+# Please refer to the documentation for more information: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#compression_level
 garage_compression_level: 2
 
-garage_s3_root_domain: "s3.garage.internal"
+# S3 Web Access
+# Garage supports S3 web access, which allows you to use Garage to host static websites or serve files over HTTP.
+# Refer to the documentation for more information: https://garagehq.deuxfleurs.fr/documentation/cookbook/exposing-websites/
+garage_web_access_enabled: true
 garage_web_root_domain: "web.garage.internal"
+garage_web_port: 3902
 
+garage_s3_root_domain: "s3.garage.internal"
 garage_s3_region: "garage"
 
 # The name of the zone for the Garage service
-# If you set this within host vars it allows for fancy configurations of reduncy incase you have multiple zones (locations)
+# If you set this within host vars it allows for fancy configurations for redundancy incase you have multiple zones (locations)
 garage_zone_name: garage
 
 # I would reccomend setting this in host vars to allow for different node sizes.
@@ -35,15 +67,16 @@ garage_zone_name: garage
 # Please read the documentation for more information on this: https://garagehq.deuxfleurs.fr/documentation/cookbook/real-world/
 garage_node_capacity: 15G
 
-# Secrets. PLEASE CHANGE THESE BEFORE PRODUCTION USE!
-garage_rpc_secret: febe61022ea9cc8df7f7963799497c2922ca574717a6700311250111773d82af
-garage_admin_token: 9a133d8f8b1f7c79f06d7a1923cb9a1342d4527e83a0aeb8728b8d112dab8d61
-garage_metrics_token: bd5dd85ea558052680cacf3cb994255d6b738e5d9e7ef62dd6fc9fe3e0ac5abb
+# Secrets. PLEASE CHANGE THESE!
+garage_rpc_secret: SECRET
+garage_admin_token: SECRET
+garage_metrics_token: SECRET
 
+# Ports
+# The RPC and Admin ports are not exposed outside the cluster.
 garage_admin_api_port: 3903
 garage_rpc_port: 3901
 garage_s3_port: 3900
-garage_web_port: 3902
 
 garage_rpc_address: "{{ ansible_default_ipv4.address }}"
 

@@ -27,3 +27,19 @@
       - garage_db_engine in ['sqlite', 'lmdb', 'sled']
       - garage_db_engine != 'sled' or garage_version is version('0.9.0', '<')
     msg: "The database engine must be one of 'sqlite', 'lmdb', or 'sled' (pre v0.9.0)."
+
+- name: Check that compression level is valid
+  ansible.builtin.assert:
+    that:
+      - (garage_compression_level | int >= 1 and garage_compression_level | int <= 19) or garage_compression_level == "none"
+    msg: "The compression level must be an integer between 1 and 19. 'none' is also a valid value."
+
+- name: Check if secrets have been changed from default
+  ansible.builtin.assert:
+    that:
+      - "{{ item }} != 'SECRET' and item is not none"
+    msg: "The secret {{ item }} must be set to a non-default value."
+  loop:
+    - garage_rpc_secret
+    - garage_s3_secret
+    - garage_web_secret

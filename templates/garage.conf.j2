@@ -6,7 +6,22 @@ replication_factor = {{ garage_replication_factor }}
 
 consistency_mode = "{{ garage_consistency_mode }}"
 metadata_fsync = {{ garage_metadata_fsync | lower}}
+data_fysnc = {{ garage_data_fsync | lower}}
 compression_level = {{ garage_compression_level }}
+
+{% if garage_metadata_autosnapshot_enabled %}
+metadata_auto_snapshot_interval = "{{ garage_metadata_autosnapshot_interval }}"
+{% endif %}
+
+disable_scrub = {{ not garage_scrub_enabled | lower }}
+
+use_local_tz = {{ garage_use_local_time | lower }}
+
+block_size = {{ garage_block_size }}
+
+{% if db_engine == "lmdb" and garage_lmdb_map_size is defined %}
+lmdb_map_size = {{ garage_lmdb_map_size }}
+{$ endif %}
 
 rpc_bind_addr = "[::]:{{ garage_rpc_port }}"
 rpc_public_addr = "{{ garage_rpc_address }}:{{ garage_rpc_port }}"
@@ -17,10 +32,12 @@ s3_region = "{{ garage_s3_region }}"
 api_bind_addr = "[::]:{{ garage_s3_port }}"
 root_domain = ".{{ garage_s3_root_domain }}"
 
+{% if garage_web_access_enabled %}
 [s3_web]
 bind_addr = "[::]:{{ garage_web_port }}"
 root_domain = ".{{ garage_web_root_domain }}"
 index = "index.html"
+{% endif %}
 
 [admin]
 api_bind_addr = "[::]:{{ garage_admin_api_port }}"
