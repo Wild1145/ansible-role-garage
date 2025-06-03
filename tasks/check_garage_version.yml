@@ -46,12 +46,3 @@
   ansible.builtin.fail:
     msg: "Garage version {{ garage_version }} is older than the current version {{ current_garage_version }}."
   when: current_garage_version is defined and current_garage_version is version(garage_version, '>')
-
-- name: Upgrade Garage
-  ansible.builtin.import_tasks: install_garage.yml
-  when: current_garage_version is defined and current_garage_version is version(garage_version, '<')
-  throttle: 1
-
-- name: Install Garage
-  ansible.builtin.include_tasks: install_garage.yml
-  when: current_garage_version is not defined or not (current_garage_version is defined and current_garage_version == garage_version)
