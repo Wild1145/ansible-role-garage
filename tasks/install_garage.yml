@@ -1,6 +1,6 @@
 - name: Download Garage
   ansible.builtin.get_url:
-    url: "https://garagehq.deuxfleurs.fr/_releases/{{ garage_version }}/x86_64-unknown-linux-musl/garage"
+    url: "https://garagehq.deuxfleurs.fr/_releases/{{ garage_version }}/{{ garage_architecture }}-unknown-linux-musl/garage"
     dest: "{{ garage_binary }}"
     mode: '0711'
     owner: root

@@ -4,6 +4,9 @@ garage_metadata_directory: /opt/garage/metadata
 garage_data_directory: /opt/garage/data
 garaeg_metadata_snapshot_directory: "{{ garage_metadata_directory }}/snapshots"
 
+# System architecture to determine what binary to install
+garage_architecture: "{{ ansible_architecture }}"
+
 # This can be set to a specific version or "latest"
 # The version tag should be in the format vX.Y.Z
 garage_version: "latest"
