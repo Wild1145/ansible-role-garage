@@ -1,3 +1,5 @@
+# Where Garage stores its metadata and data.
+# The idea of separate directories is to allow for metdata to be on faster storage than data.
 garage_metadata_directory: /opt/garage/metadata
 garage_data_directory: /opt/garage/data
 garaeg_metadata_snapshot_directory: "{{ garage_metadata_directory }}/snapshots"
@@ -54,8 +56,12 @@ garage_compression_level: 2
 garage_web_access_enabled: true
 garage_web_root_domain: "web.garage.internal"
 garage_web_port: 3902
+garage_web_default_index: "index.html"
 
+# S3 Access
+# The root domain for the S3 service. This is used for the S3 API, both path and host style access. This is not meant to be a wildcard domain.
 garage_s3_root_domain: "s3.garage.internal"
+# The region for the S3 service. This is used for the S3 API. Garage will reject any requests that do not match this region.
 garage_s3_region: "garage"
 
 # The name of the zone for the Garage service
@@ -78,6 +84,7 @@ garage_admin_api_port: 3903
 garage_rpc_port: 3901
 garage_s3_port: 3900
 
+# This must be an address that all nodes in the cluster can use to reach other nodes.
 garage_rpc_address: "{{ ansible_default_ipv4.address }}"
 
 # Nginx only supported for single node deployments

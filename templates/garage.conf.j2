@@ -36,7 +36,7 @@ root_domain = ".{{ garage_s3_root_domain }}"
 [s3_web]
 bind_addr = "[::]:{{ garage_web_port }}"
 root_domain = ".{{ garage_web_root_domain }}"
-index = "index.html"
+index = "{{ garage_web_default_index }}"
 {% endif %}
 
 [admin]

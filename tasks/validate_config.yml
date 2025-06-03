@@ -43,3 +43,11 @@
     - garage_rpc_secret
     - garage_s3_secret
     - garage_web_secret
+
+- name: Remove dot from start of root domains
+  ansible.builtin.set_fact:
+    garage_s3_root_domain: "{{ garage_s3_root_domain.lstrip('.') }}"
+    garage_web_root_domain: "{{ garage_web_root_domain.lstrip('.') }}"
+  when:
+    - garage_s3_root_domain is defined
+    - garage_web_root_domain is defined
