@@ -2,7 +2,7 @@
 # The idea of separate directories is to allow for metdata to be on faster storage than data.
 garage_metadata_directory: /opt/garage/metadata
 garage_data_directory: /opt/garage/data
-garaeg_metadata_snapshot_directory: "{{ garage_metadata_directory }}/snapshots"
+garage_metadata_snapshot_directory: "{{ garage_metadata_directory }}/snapshots"
 
 # System architecture to determine what binary to install
 garage_architecture: "{{ ansible_architecture }}"
@@ -44,10 +44,6 @@ garage_block_size: "1M"
 
 # Before changing this value, please read the documentation: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#block_ram_buffer_max
 garage_block_ram_buffer_max: "256MiB"
-
-# The maximum size of the metadata LMDB database. This is only used if you are using the LMDB database engine.
-# Please read the documentation before setting this value: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#lmdb_map_size
-# garage_lmdb_map_size: 0
 
 # The Zstd compression level used by Garage for storing data. This can be set to an integer between 1 and 19, or "none" to disable compression.
 # Please refer to the documentation for more information: https://garagehq.deuxfleurs.fr/documentation/reference-manual/configuration/#compression_level

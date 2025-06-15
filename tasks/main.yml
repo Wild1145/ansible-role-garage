@@ -20,16 +20,6 @@
   ansible.builtin.include_tasks: install_garage.yml
   when: current_garage_version is not defined or not (current_garage_version is defined and current_garage_version == garage_version)
 
-- name: Get node id
-  ansible.builtin.shell: |
-    garage node id -q
-  changed_when: false
-  register: garage_node_id
-
-- name: Save garage node id
-  ansible.builtin.set_fact:
-    garage_node_id: "{{ garage_node_id.stdout }}"
-
 - name: Configure Garage
   ansible.builtin.include_tasks:
     file: configure_garage.yml

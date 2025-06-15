@@ -41,8 +41,8 @@
     msg: "The secret {{ item }} must be set to a non-default value."
   loop:
     - garage_rpc_secret
-    - garage_s3_secret
-    - garage_web_secret
+    - garage_admin_token
+    - garage_metrics_token
 
 - name: Remove dot from start of root domains
   ansible.builtin.set_fact:

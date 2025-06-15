@@ -31,7 +31,7 @@ Buckets can ne defined within the `garage_buckets` variable as fount in [default
 ### Creating keys
 Keys can be defined within the `garage_keys` variable as fount in [defaults/main.yml](./defaults/main.yml). The ID must be unique and me a 24 character hexadecimal string prefixed with `GK`. The secret must be a 64 character hexadecimal string.
 
-To generate a key can complies to all the requirements use the `keygen.sh` bash script included with this role.
+To generate a key that complies to all the requirements use the `keygen.sh` bash script included with this role.
 
 ## Ngnix Deployment
 The nginx deployment that this role deploys is meant to load balance and provide subdomain support for the S3 and web endpoints on a single port. If you have another reverse proxy I would recomend you set up your own loadbalancer in accordance with [Garage's docs](https://garagehq.deuxfleurs.fr/documentation/cookbook/reverse-proxy/).

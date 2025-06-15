@@ -5,24 +5,19 @@ db_engine = "{{ garage_db_engine }}"
 replication_factor = {{ garage_replication_factor }}
 
 consistency_mode = "{{ garage_consistency_mode }}"
-metadata_fsync = {{ garage_metadata_fsync | lower}}
-data_fysnc = {{ garage_data_fsync | lower}}
+metadata_fsync = {{ garage_metadata_fsync | lower }}
+data_fysnc = {{ garage_data_fsync | lower }}
 compression_level = {{ garage_compression_level }}
 
 {% if garage_metadata_autosnapshot_enabled %}
 metadata_auto_snapshot_interval = "{{ garage_metadata_autosnapshot_interval }}"
 {% endif %}
 
-disable_scrub = {{ not garage_scrub_enabled | lower }}
+disable_scrub = {{ (not garage_scrub_enabled) | lower }}
 
 use_local_tz = {{ garage_use_local_time | lower }}
 
-block_size = {{ garage_block_size }}
-
-{% if db_engine == "lmdb" and garage_lmdb_map_size is defined %}
-lmdb_map_size = {{ garage_lmdb_map_size }}
-{$ endif %}
-
+block_size = "{{ garage_block_size }}"
 rpc_bind_addr = "[::]:{{ garage_rpc_port }}"
 rpc_public_addr = "{{ garage_rpc_address }}:{{ garage_rpc_port }}"
 rpc_secret = "{{ garage_rpc_secret }}"

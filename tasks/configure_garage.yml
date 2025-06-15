@@ -1,3 +1,25 @@
+- name: Template garage config file
+  ansible.builtin.template:
+    src: garage.conf.j2
+    dest: "/etc/garage.toml"
+    mode: '0600'
+    owner: "{{ garage_user }}"
+    group: "{{ garage_group }}"
+  notify: Restart garage
+
+- name: Flush handlers
+  ansible.builtin.meta: flush_handlers
+
+- name: Get node id
+  ansible.builtin.shell: |
+    garage node id -q
+  changed_when: false
+  register: garage_node_id
+
+- name: Save garage node id
+  ansible.builtin.set_fact:
+    garage_node_id: "{{ garage_node_id.stdout }}"
+
 - name: Loop connect garage nodes
   ansible.builtin.command:
     cmd: "garage node connect {{ hostvars[item]['garage_node_id'] }}"
