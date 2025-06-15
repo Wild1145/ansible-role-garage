@@ -35,3 +35,6 @@ To generate a key that complies to all the requirements use the `keygen.sh` bash
 
 ## Ngnix Deployment
 The nginx deployment that this role deploys is meant to load balance and provide subdomain support for the S3 and web endpoints on a single port. If you have another reverse proxy I would recomend you set up your own loadbalancer in accordance with [Garage's docs](https://garagehq.deuxfleurs.fr/documentation/cookbook/reverse-proxy/).
+
+### SSL Support
+This role supports enabling SSL with pre-existing certificates, this is due to the complexity of all the different ways certs can be generated, but if you want to use Lets Encrypt (certbot), i would reccomend using [Jeff Geerlings Certbot Ansible role](https://github.com/geerlingguy/ansible-role-certbot).
