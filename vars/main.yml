@@ -12,3 +12,5 @@ keepalived_instances:
     priority: "{{ (inventory_hostname == ansible_play_hosts[0]) | ternary('200', '100') }}"
     vips:
       - "{{ garage_vip }} dev {{ ansible_default_ipv4.interface }}"
+
+garage_nginx_client_max_body_size: 100m
