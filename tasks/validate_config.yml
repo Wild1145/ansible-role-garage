@@ -37,7 +37,7 @@
 - name: Check if secrets have been changed from default
   ansible.builtin.assert:
     that:
-      - "{{ item }} != 'SECRET' and item is not none"
+      - item != 'SECRET' and item is not none
     msg: "The secret {{ item }} must be set to a non-default value."
   loop:
     - garage_rpc_secret
