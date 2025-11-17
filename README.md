@@ -27,9 +27,9 @@ By default this role will always pull the latest version of the binary, but it i
 ## Managing buckets and keys
 This role can create and manage keys and buckets withing Garage. It will not delete buckets or keys.
 ### Creating buckets
-Buckets can ne defined within the `garage_buckets` variable as fount in [defaults/main.yml](./defaults/main.yml). The only required field is the name, by default web access will be disabled and there will be an unlimited quota. Bucket name must be unique.
+Buckets can ne defined within the `garage_buckets` variable as found in [defaults/main.yml](./defaults/main.yml). The only required field is the name, by default web access will be disabled and there will be an unlimited quota. Bucket name must be unique.
 ### Creating keys
-Keys can be defined within the `garage_keys` variable as fount in [defaults/main.yml](./defaults/main.yml). The ID must be unique and me a 24 character hexadecimal string prefixed with `GK`. The secret must be a 64 character hexadecimal string.
+Keys can be defined within the `garage_keys` variable as found in [defaults/main.yml](./defaults/main.yml). The ID must be unique and me a 24 character hexadecimal string prefixed with `GK`. The secret must be a 64 character hexadecimal string.
 
 To generate a key that complies to all the requirements use the `keygen.sh` bash script included with this role.
 
