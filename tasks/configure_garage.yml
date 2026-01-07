@@ -15,40 +15,33 @@
     garage node id -q
   changed_when: false
   register: garage_node_id
-  args:
-    executable: /bin/bash
 
 - name: Save garage node id
   ansible.builtin.set_fact:
     garage_node_id: "{{ garage_node_id.stdout }}"
 
 - name: Loop connect garage nodes
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: "garage node connect {{ hostvars[item]['garage_node_id'] }}"
   loop: "{{ ansible_play_hosts | reject('equalto', inventory_hostname) }}"
   delegate_to: "{{ ansible_play_hosts[0] }}"
   changed_when: false
   run_once: true
   when: ansible_play_hosts | length > 1
-  args:
-    executable: /bin/bash
+
 - name: Assign layout (Storage Nodes)
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: "garage layout assign {{ garage_node_id.split('@')[0] }} -z {{ garage_zone_name }} -c {{ garage_node_capacity }}"
   changed_when: false
   delegate_to: "{{ ansible_play_hosts[0] }}"
   when: garage_gateway_node = false
-  args:
-    executable: /bin/bash
 
 - name: Assign layout (Gateway Nodes)
-  ansible.builtin.shell:
+  ansible.builtin.command:
     cmd: "garage layout assign --gateway {{ garage_node_id.split('@')[0] }} -z {{ garage_zone_name }}"
   changed_when: false
   delegate_to: "{{ ansible_play_hosts[0] }}"
   when: garage_gateway_node = true
-  args:
-    executable: /bin/bash
 
 - name: Get current layout verion number
   ansible.builtin.uri:
@@ -65,9 +58,7 @@
   delegate_to: "{{ ansible_play_hosts[0] }}"
 
 - name: Apply Layout
-  ansible.builtin.shell: "garage layout apply --version {{ new_layout_version }}"
+  ansible.builtin.command: "garage layout apply --version {{ new_layout_version }}"
   changed_when: false
   run_once: true
   delegate_to: "{{ ansible_play_hosts[0] }}"
-  args:
-    executable: /bin/bash
