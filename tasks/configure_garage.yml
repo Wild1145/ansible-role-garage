@@ -31,6 +31,9 @@
   changed_when: false
   run_once: true
   when: ansible_play_hosts | length > 1
+  environment:
+    # Start from the remote environment PATH, then add common system dirs
+    PATH: "{{ ansible_env.PATH | default('/usr/bin:/bin') }}:/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:/snap/bin"
 
 - name: Assign layout (Storage Nodes)
   ansible.builtin.shell:
