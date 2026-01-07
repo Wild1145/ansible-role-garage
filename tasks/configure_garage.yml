@@ -35,25 +35,27 @@
     # Start from the remote environment PATH, then add common system dirs
     PATH: "{{ ansible_env.PATH | default('/usr/bin:/bin') }}:/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:/snap/bin"
 
-- name: Assign layout (Storage Nodes)
+- name: Assign layout
   ansible.builtin.shell:
-    cmd: "garage layout assign {{ garage_node_id.split('@')[0] }} -z {{ garage_zone_name }} -c {{ garage_node_capacity }}"
+    argv: "{{ base_args + extra_args }}"
   changed_when: false
   delegate_to: "{{ ansible_play_hosts[0] }}"
-  when: garage_gateway_node = false 
+  run_once: true
   environment:
     # Start from the remote environment PATH, then add common system dirs
     PATH: "{{ ansible_env.PATH | default('/usr/bin:/bin') }}:/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:/snap/bin"
-
-- name: Assign layout (Gateway Nodes)
-  ansible.builtin.shell:
-    cmd: "garage layout assign --gateway {{ garage_node_id.split('@')[0] }} -z {{ garage_zone_name }}"
-  changed_when: false
-  delegate_to: "{{ ansible_play_hosts[0] }}"
-  when: garage_gateway_node = true 
-  environment:
-    # Start from the remote environment PATH, then add common system dirs
-    PATH: "{{ ansible_env.PATH | default('/usr/bin:/bin') }}:/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:/snap/bin"
+  vars:
+    node_id_stripped: "{{ garage_node_id | split('@') | first }}"
+    base_args:
+      - garage
+      - layout
+      - assign
+      - "{{ node_id_stripped }}"
+      - -z
+      - "{{ garage_zone_name }}"
+    extra_args: "{{ garage_gateway_node
+                   | ternary(['--gateway'],
+                             ['-c', (garage_node_capacity | string)]) }}"
 
 - name: Get current layout verion number
   ansible.builtin.uri:
