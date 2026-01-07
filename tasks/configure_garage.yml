@@ -14,8 +14,11 @@
   ansible.builtin.shell: |
     garage node id -q
   changed_when: false
-  register: garage_node_id
-
+  register: garage_node_id  
+  environment:
+    # Start from the remote environment PATH, then add common system dirs
+    PATH: "{{ ansible_env.PATH | default('/usr/bin:/bin') }}:/usr/local/bin:/usr/local/sbin:/usr/sbin:/sbin:/snap/bin"
+    
 - name: Save garage node id
   ansible.builtin.set_fact:
     garage_node_id: "{{ garage_node_id.stdout }}"
