@@ -15,7 +15,8 @@
     garage node id -q
   changed_when: false
   register: garage_node_id
-  executable: /bin/bash
+  args:
+    executable: /bin/bash
 
 - name: Save garage node id
   ansible.builtin.set_fact:
@@ -29,15 +30,16 @@
   changed_when: false
   run_once: true
   when: ansible_play_hosts | length > 1
-  executable: /bin/bash
-
+  args:
+    executable: /bin/bash
 - name: Assign layout (Storage Nodes)
   ansible.builtin.shell:
     cmd: "garage layout assign {{ garage_node_id.split('@')[0] }} -z {{ garage_zone_name }} -c {{ garage_node_capacity }}"
   changed_when: false
   delegate_to: "{{ ansible_play_hosts[0] }}"
   when: garage_gateway_node = false
-  executable: /bin/bash
+  args:
+    executable: /bin/bash
 
 - name: Assign layout (Gateway Nodes)
   ansible.builtin.shell:
@@ -45,7 +47,8 @@
   changed_when: false
   delegate_to: "{{ ansible_play_hosts[0] }}"
   when: garage_gateway_node = true
-  executable: /bin/bash
+  args:
+    executable: /bin/bash
 
 - name: Get current layout verion number
   ansible.builtin.uri:
@@ -66,4 +69,5 @@
   changed_when: false
   run_once: true
   delegate_to: "{{ ansible_play_hosts[0] }}"
-  executable: /bin/bash
+  args:
+    executable: /bin/bash
